@@ -4,6 +4,7 @@ pypdf
 langchain-text-splitters
 python-dotenv
 fastapi
-uvicorn
-streamlit
+uvicorn[standard]
 pydantic>=2.0
+pgvector
+psycopg[binary]

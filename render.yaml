@@ -1,0 +1,33 @@
+# Render Blueprint for DocsRAG (https://render.com)
+# Creates a managed Postgres (with pgvector available) + the web service.
+# Push this repo to GitHub, then in Render: New > Blueprint, point at the repo.
+
+databases:
+  - name: docsrag-db
+    plan: free            # fine for a demo; upgrade for real client data
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: docsrag
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn embed_api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false                 # set this manually in the Render dashboard
+      - key: DOCSRAG_API_KEY
+        generateValue: true         # Render generates a strong random key
+      - key: ALLOWED_ORIGINS
+        sync: false                 # set to the client's domain(s)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: docsrag-db
+          property: connectionString
+
+# After first deploy, run the one-time table setup and index build from the
+# Render shell (Dashboard > docsrag > Shell):
+#   psql "$DATABASE_URL" -c "CREATE EXTENSION IF NOT EXISTS vector;"
+#   psql "$DATABASE_URL" -f schema.sql
+#   python pg_build_index.py
