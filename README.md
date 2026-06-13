@@ -17,7 +17,7 @@ FastAPI · OpenAI (embeddings + chat) · NumPy vector search · Streamlit · Pyt
 ## Setup
 
 ```bash
-python -m venv venv && source venv/bin/activate
+python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env          # then paste your OpenAI API key into .env
 ```
@@ -26,13 +26,13 @@ cp .env.example .env          # then paste your OpenAI API key into .env
 
 ```bash
 # 1. Build the index from the files in docs/ (a sample doc is included)
-python build_index.py
+python3 build_index.py       # watch it chunk + embed
 
 # 2a. Try it on the command line
-python rag.py "What are the ways a batter can get out?"
+python3 rag.py "What are the ways a batter can get out?"
 
 # 2b. Or launch the demo UI
-streamlit run app.py
+streamlit run app.py        # the visual demo
 
 # 2c. Or run it as an API
 uvicorn api:app --reload

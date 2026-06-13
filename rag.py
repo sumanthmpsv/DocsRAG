@@ -25,6 +25,10 @@ SYSTEM_PROMPT = (
     "You answer questions using ONLY the provided context passages. "
     "If the answer is not contained in the context, say "
     "\"I don't know based on the provided documents.\" "
+    "If the context contains conflicting or differing information, do NOT pick "
+    "one and hide the rest. Instead, surface each version, attribute it to its "
+    "source, and state the condition under which each applies (for example a "
+    "specific format, league, or section). "
     "Be concise and never invent facts."
 )
 
@@ -36,7 +40,7 @@ def _format_context(results: list[dict]) -> str:
     )
 
 
-def answer(question: str, k: int = 4, store: VectorStore | None = None) -> dict:
+def answer(question: str, k: int = 6, store: VectorStore | None = None) -> dict:
     store = store or VectorStore.load("index.pkl")
     results = store.search(question, k=k)
     context = _format_context(results)
